@@ -1,5 +1,5 @@
 const { GoogleSpreadsheet } = require('google-spreadsheet');
-const creds = require('./creds.json');
+const creds = require('../creds.json');
 
 module.exports = class Sheet {
     constructor () {
