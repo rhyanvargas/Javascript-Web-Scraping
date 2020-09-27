@@ -28,11 +28,6 @@ async function scrapePage(pageNumber,location) {
         }
     })
 
-    // filter data 
-    // if(title) rows = await rows.filter(job => job.title.includes(title));
-
-    console.log(url);
-
     return rows;
 }
 
