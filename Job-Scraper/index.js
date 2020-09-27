@@ -1,10 +1,19 @@
 const Sheet = require('./sheet');
 const fetch = require('node-fetch');
 
+let pageNumber = 1;
+let githubRoot =
+    "https://jobs.github.com/positions.json";
+    
 
-async function scrapePage(pageNumber, title) {
+async function scrapePage(pageNumber,location) {
+
+    location = typeof location !== "undefined" ? location : "";
+
+    let url = `${githubRoot}?page=${pageNumber}&location=${location}`;
+    
     // get data in JSON 
-    const res = await fetch(`https://jobs.github.com/positions.json?page=${pageNumber}?search=code`);
+    const res = await fetch(url);
     const json = await res.json();
 
     // map to data model
@@ -20,7 +29,9 @@ async function scrapePage(pageNumber, title) {
     })
 
     // filter data 
-    rows = await rows.filter(job => job.title.includes(title));
+    // if(title) rows = await rows.filter(job => job.title.includes(title));
+
+    console.log(url);
 
     return rows;
 }
@@ -29,7 +40,7 @@ async function scrapePage(pageNumber, title) {
     let i = 1;
     let rows = [];
     while (true) {
-        let newRows = await scrapePage(i, 'Full');
+        let newRows = await scrapePage(i, "remote");
         if (newRows.length == 0) {
             console.log("Page: " + i)
             break;
@@ -37,45 +48,13 @@ async function scrapePage(pageNumber, title) {
         rows = rows.concat(newRows);
         i++;
     }
-    
-    // sort
+
+    // sort by latest date
     rows = await rows.sort((a,b)=> new Date(b.date) - new Date(a.date));
-    
+
     // add to rows gsheet
     const sheet = new Sheet();
     await sheet.load();
     await sheet.addRows(rows);
 
 })();
-
-
-
-// var pageNumber = 1;
-
-// while (scrapePage(pageNumber).length != null) {
-//     console.log(pageNumber);
-//     pageNumber ++;
-// }
-
-
-// (async function () {
-
-//     // get data in JSON 
-//     const res = await fetch('https://jobs.github.com/positions.json?page=1?search=code');
-//     const json = await res.json();
-
-//     // map to data model
-//     var rows = json.map(job => {
-//         return {
-//             company: job.company,
-//             url: job.url,
-//             title: job.title,
-//             location: job.location,
-//             type: job.type,
-//             date: job.created_at,
-//         }
-//     })
-
-    // const sheet = new Sheet();
-    // await sheet.load();
-    // await sheet.addRows(rows);
