@@ -10,7 +10,7 @@ module.exports = class Sheet {
         await this.doc.loadInfo();
     }
     async addRows(rows) {
-        const sheet = await this.doc.sheetsByIndex[1];
+        const sheet = await this.doc.sheetsByIndex[0];
         await sheet.addRows(rows);
         console.log(`Added: ${rows.length} Rows!`);
     }    
