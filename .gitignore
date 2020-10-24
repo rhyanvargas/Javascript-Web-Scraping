@@ -5,3 +5,4 @@ creds.json
 */creds.*
 creds.*
 .env
+*/.env
